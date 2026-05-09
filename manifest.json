@@ -1,4 +1,5 @@
 {
+  "id": "ilol-impound-calc",
   "name": "ILOL & Impound Date Calculator",
   "short_name": "DateCalc",
   "description": "Calculate dates for ILOL and Impound notices",
@@ -6,20 +7,35 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2196F3",
-  "orientation": "portrait-primary",
   "scope": "./",
   "icons": [
     {
       "src": "ILOL.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "maskable"
     },
     {
       "src": "ILOL.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "ILOL.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Desktop View"
+    },
+    {
+      "src": "ILOL.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mobile View"
     }
   ],
   "categories": ["business", "productivity", "utilities"]
