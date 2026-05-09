@@ -7,6 +7,7 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2196F3",
+  "orientation": "any",
   "scope": "./",
   "icons": [
     {
@@ -16,27 +17,24 @@
       "purpose": "maskable"
     },
     {
-      "src": "ILOL.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     }
   ],
+  "categories": [
+    "business",
+    "productivity",
+    "utilities"
+  ],
   "screenshots": [
     {
-      "src": "ILOL.png", 
-      "sizes": "512x512",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Desktop View"
-    },
-    {
-      "src": "ILOL.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Mobile View"
+      "label": "App Icon Preview"
     }
-  ],
-  "categories": ["business", "productivity", "utilities"]
+  ]
 }
