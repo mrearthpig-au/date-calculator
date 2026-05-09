@@ -10,25 +10,38 @@
     <link rel="apple-touch-icon" href="ILOL.png">
 
     <style>
+        /* --- General Layout --- */
         body {
             font-family: Calibri, Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 2vh 2vw; /* Scales padding based on screen size */
             background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        /* ---------- Tabs ---------- */
+        .app-container {
+            width: 95%;
+            /* This allows it to be wider on huge screens, but not absurdly so */
+            max-width: 800px; 
+        }
+
+        /* --- Tabs --- */
         .tabs {
             display: flex;
             border-bottom: 2px solid #ccc;
-            margin-bottom: 20px;
+            margin-bottom: 1.5vh;
         }
 
         .tabs button {
             background: #f2f2f2;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 5px;
             cursor: pointer;
-            font-size: 14pt;
+            /* Fluid font size: scales between 16px and 22px */
+            font-size: clamp(1rem, 1.5vw, 1.4rem); 
             font-weight: bold;
             flex: 1;
             transition: 0.3s;
@@ -40,25 +53,21 @@
             color: #0078d4;
         }
 
-        .tabs button:hover {
-            background: #e6e6e6;
-        }
-
-        /* ---------- Tab Content ---------- */
+        /* --- Tab Content --- */
         .tab-content {
             display: none;
+            width: 100%;
         }
 
         .tab-content.active {
             display: block;
         }
 
-        /* ---------- Tables ---------- */
+        /* --- Tables --- */
         table {
             width: 100%;
-            max-width: 500px;
             border-collapse: collapse;
-            margin-bottom: 25px;
+            margin-bottom: 2vh;
             background: white;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
@@ -66,115 +75,130 @@
         th, td {
             text-align: left;
             border-bottom: 1px solid #ddd;
+            padding: 1vh 1.5vw;
         }
 
         th {
-            padding: 12px 20px;
             background-color: #f2f2f2;
-            font-size: 14pt;
+            font-size: clamp(1rem, 1.8vw, 1.3rem);
         }
 
         td {
-            padding: 12px 20px;
-            font-size: 12pt;
+            font-size: clamp(0.9rem, 1.5vw, 1.2rem);
         }
 
-        /* ---------- Labels & Inputs ---------- */
+        /* --- Labels & Inputs --- */
         label {
             display: block;
-            font-size: 14pt;
+            font-size: clamp(1rem, 1.8vw, 1.2rem);
             font-weight: bold;
             margin-bottom: 8px;
         }
 
         input[type="date"] {
             width: 100%;
-            max-width: 480px;
-            padding: 10px;
-            font-size: 14pt;
+            box-sizing: border-box;
+            padding: 12px;
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 2vh;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
 
         #credit {
             display: block;
-            margin-top: 20px;
+            margin-top: 2vh;
             font-style: italic;
-            font-size: 11pt;
+            font-size: clamp(0.8rem, 1.2vw, 1rem);
             color: #666;
+            text-align: center;
         }
 
-        /* ---------- Row Highlighting ---------- */
-        .issue-row td { background-color: #ffffff; }
+        /* --- Row Highlighting --- */
         .commencement-row td { background-color: #e6f2ff; font-weight: bold; }
         .other-date-row td { background-color: #f7f7f7; }
+
+        /* --- Ultra-Wide specific adjustment --- */
+        @media (min-width: 2500px) {
+            .app-container {
+                max-width: 1000px; /* Let it grow more on your 3440px monitor */
+            }
+        }
+
+        /* --- Vertical Safety Valve --- 
+           If the screen is short (like 1080p), we squash the padding 
+           so it doesn't scroll. */
+        @media (max-height: 950px) {
+            th, td { padding: 4px 12px; }
+            table { margin-bottom: 10px; }
+            input[type="date"] { margin-bottom: 10px; }
+        }
     </style>
 </head>
 
 <body>
 
-<div class="tabs">
-    <button class="tab-button active" onclick="openTab(event, 'ilol')">ILOL Calculator</button>
-    <button class="tab-button" onclick="openTab(event, 'impound')">Impound Calculator</button>
+<div class="app-container">
+    <div class="tabs">
+        <button class="tab-button active" onclick="openTab(event, 'ilol')">ILOL Calculator</button>
+        <button class="tab-button" onclick="openTab(event, 'impound')">Impound Calculator</button>
+    </div>
+
+    <div id="ilol" class="tab-content active">
+        <label for="date-picker">Select an issue date:</label>
+        <input type="date" id="date-picker" onchange="insertDate()">
+
+        <table>
+            <tr><th colspan="2">Effective Forthwith</th></tr>
+            <tr class="issue-row"><td>Issue Date</td><td id="selected-date">-</td></tr>
+            <tr class="commencement-row"><td>Commencement Date</td><td id="commencement-date">-</td></tr>
+            <tr class="other-date-row"><td>3 Month End Date</td><td id="3-month-end-date">-</td></tr>
+            <tr class="other-date-row"><td>6 Month End Date</td><td id="6-month-end-date">-</td></tr>
+            <tr class="other-date-row"><td>12 Month End Date</td><td id="12-month-end-date">-</td></tr>
+        </table>
+
+        <table>
+            <tr><th colspan="2">Commence in 48 hours</th></tr>
+            <tr class="issue-row"><td>Issue Date</td><td id="selected-date-48hours">-</td></tr>
+            <tr class="commencement-row"><td>Commencement Date</td><td id="commencement-date-48hours">-</td></tr>
+            <tr class="other-date-row"><td>6 Month End Date</td><td id="6-month-end-date-48hours">-</td></tr>
+            <tr class="other-date-row"><td>12 Month End Date</td><td id="12-month-end-date-48hours">-</td></tr>
+        </table>
+        
+        <table>
+            <tr><th colspan="2">Commence in 28 days</th></tr>
+            <tr class="issue-row"><td>Issue Date</td><td id="selected-date-28days">-</td></tr>
+            <tr class="commencement-row"><td>Commencement Date</td><td id="commencement-date-28days">-</td></tr>
+            <tr class="other-date-row"><td>3 Month End Date</td><td id="3-month-end-date-28days">-</td></tr>
+            <tr class="other-date-row"><td>6 Month End Date</td><td id="6-month-end-date-28days">-</td></tr>
+        </table>
+    </div>
+
+    <div id="impound" class="tab-content">
+        <label for="impound-date">Select impound date:</label>
+        <input type="date" id="impound-date" onchange="calculateImpound()">
+
+        <table>
+            <tr><th colspan="2">Impound End Date</th></tr>
+            <tr class="commencement-row">
+                <td>End of 28 Days</td>
+                <td id="impound-end">-</td>
+            </tr>
+        </table>
+    </div>
+
+    <label id="credit">Coding Credit – Jason Crocker</label>
 </div>
-
-<div id="ilol" class="tab-content active">
-    <label for="date-picker">Select an issue date:</label>
-    <input type="date" id="date-picker" onchange="insertDate()">
-
-    <table>
-        <tr><th colspan="2">Effective Forthwith</th></tr>
-        <tr class="issue-row"><td>Issue Date</td><td id="selected-date">-</td></tr>
-        <tr class="commencement-row"><td>Commencement Date</td><td id="commencement-date">-</td></tr>
-        <tr class="other-date-row"><td>3 Month End Date</td><td id="3-month-end-date">-</td></tr>
-        <tr class="other-date-row"><td>6 Month End Date</td><td id="6-month-end-date">-</td></tr>
-        <tr class="other-date-row"><td>12 Month End Date</td><td id="12-month-end-date">-</td></tr>
-    </table>
-
-    <table>
-        <tr><th colspan="2">Commence in 28 days</th></tr>
-        <tr class="issue-row"><td>Issue Date</td><td id="selected-date-28days">-</td></tr>
-        <tr class="commencement-row"><td>Commencement Date</td><td id="commencement-date-28days">-</td></tr>
-        <tr class="other-date-row"><td>3 Month End Date</td><td id="3-month-end-date-28days">-</td></tr>
-        <tr class="other-date-row"><td>6 Month End Date</td><td id="6-month-end-date-28days">-</td></tr>
-    </table>
-
-    <table>
-        <tr><th colspan="2">Commence in 48 hours</th></tr>
-        <tr class="issue-row"><td>Issue Date</td><td id="selected-date-48hours">-</td></tr>
-        <tr class="commencement-row"><td>Commencement Date</td><td id="commencement-date-48hours">-</td></tr>
-        <tr class="other-date-row"><td>6 Month End Date</td><td id="6-month-end-date-48hours">-</td></tr>
-        <tr class="other-date-row"><td>12 Month End Date</td><td id="12-month-end-date-48hours">-</td></tr>
-    </table>
-</div>
-
-<div id="impound" class="tab-content">
-    <label for="impound-date">Select impound date:</label>
-    <input type="date" id="impound-date" onchange="calculateImpound()">
-
-    <table>
-        <tr><th colspan="2">Impound End Date</th></tr>
-        <tr class="commencement-row">
-            <td>End of 28 Days</td>
-            <td id="impound-end">-</td>
-        </tr>
-    </table>
-</div>
-
-<label id="credit">Coding Credit – Jason Crocker</label>
 
 <script>
-/* -------- Tab Switcher -------- */
 function openTab(evt, tabId) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
-    evt.target.classList.add('active');
+    evt.currentTarget.classList.add('active');
 }
 
-/* -------- ILOL logic -------- */
 function insertDate() {
     var selectedDate = new Date(document.getElementById("date-picker").value);
     if (isNaN(selectedDate)) return;
@@ -200,23 +224,16 @@ function insertDate() {
     document.getElementById("12-month-end-date-48hours").innerHTML = new Date(c48.getFullYear(), c48.getMonth()+12, c48.getDate()-1).toLocaleDateString("en-GB");
 }
 
-/* -------- Impound logic -------- */
 function calculateImpound() {
     var d = new Date(document.getElementById("impound-date").value);
     if (isNaN(d)) return;
-
     var end = new Date(d.getFullYear(), d.getMonth(), d.getDate()+27);
     document.getElementById("impound-end").innerHTML = end.toLocaleDateString("en-GB");
 }
 
-/* -------- Service Worker Registration -------- */
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js').then(function(registration) {
-            console.log('ServiceWorker registration successful');
-        }, function(err) {
-            console.log('ServiceWorker registration failed: ', err);
-        });
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
     });
 }
 </script>
